@@ -68,6 +68,11 @@ Build 42 on macOS has difficulty with symlinks.
 - **Use Physical Copies**: Always copy files directly to the target directory via `./install.sh`.
 - **Workshop Path**: The project uses `~/Zomboid/Workshop/DryingRacksFixedB42MP` as the active mod location.
 
+### Type Safety & Validation
+- **EmmyLua Integration**: This project uses EmmyLua for type checking. Ensure all Lua files have proper type annotations.
+- **Validation**: Before submitting changes, verify that there are no type errors. The project leverages the `Umbrella` library for Project Zomboid API types.
+- **Tooling**: If available, use `emmylua_check` to validate the workspace against `.emmyrc.json`.
+
 ### Code Style & Formatting
 - **Lua Indentation**: Use **Tabs** for indentation in all Lua files to maintain consistency with the project's LSP (lua_ls) settings.
 - **Trailing Whitespace**: Ensure no trailing whitespace is left in the files.
@@ -75,7 +80,7 @@ Build 42 on macOS has difficulty with symlinks.
 
 ### Steam Workshop Configuration
 - **VDF Formatting**: The `workshop_build.vdf` file uses Steam's BBCode formatting (e.g., `[b]`, `[i]`, `[url]`). Standard Markdown is **not** supported and will be rendered as literal text on the Workshop page.
-- **Quoting**: Ensure double quotes inside the description are escaped with a backslash (`\"`) if they are part of the VDF string value.
+- **Quoting**: Avoid using internal double quotes (`"`) or escaped quotes (`\"`) inside the `description` or `changenote` values, as they can interfere with VDF parsing or render incorrectly on the Steam Workshop. Use BBCode tags like `[b]` or `[i]` for emphasis instead.
 
 ### Scripting Utilities
 - **./install.sh**: Synchronizes local project files to the Zomboid Workshop directory.

@@ -2,9 +2,18 @@
     "$schema": "https://raw.githubusercontent.com/EmmyLuaLs/emmylua-analyzer-rust/refs/heads/main/crates/emmylua_code_analysis/resources/schema.json",
     "workspace": {
         "library": [
-            "./media/lua/shared",
-            "../../../../Umbrella/library/lua",
-            "../../../../Umbrella/library/java"
+            "./42/media/lua/shared",
+            "./42/media/lua/client",
+            "../../../Umbrella/library/lua",
+            "../../../Umbrella/library/java"
+        ],
+        "ignoreDir": [
+            "media/lua/tests"
+        ]
+    },
+    "diagnostics": {
+        "disable": [
+            "undefined-global"
         ]
     }
 }

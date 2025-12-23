@@ -29,10 +29,10 @@ DryingRackTests.mockPlayer = {
 			AddItem = function(self, itemType)
 				local newItem = {
 					fullType = itemType,
-					getFullType = function(self)
-						return self.fullType
+					getFullType = function(_self)
+						return _self.fullType
 					end,
-					getName = function(self)
+					getName = function(_self)
 						return itemType
 					end,
 				}
@@ -45,7 +45,7 @@ DryingRackTests.mockPlayer = {
 	getInventory = function(self)
 		return self.inventory
 	end,
-	getCurrentSquare = function(self)
+	getCurrentSquare = function(_self)
 		return {
 			getX = function()
 				return 0
@@ -55,7 +55,7 @@ DryingRackTests.mockPlayer = {
 			end,
 		}
 	end,
-	Say = function(self, message)
+	Say = function(_self, message)
 		print("PLAYER SAYS: " .. message)
 	end,
 }
@@ -72,7 +72,7 @@ DryingRackTests.mockRack = {
 	getFullType = function(self)
 		return self.fullType
 	end,
-	getSquare = function(self)
+	getSquare = function(_self)
 		return {
 			getX = function()
 				return 1

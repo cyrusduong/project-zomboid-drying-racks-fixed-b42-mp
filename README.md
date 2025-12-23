@@ -1,5 +1,7 @@
 # DryingRacksFixed B42 MP
 
+![Preview Image](https://raw.githubusercontent.com/cyrusduong/project-zomboid-drying-racks-fixed-b42-mp/main/preview.png)
+
 A Project Zomboid Build 42 mod that fixes broken drying rack mechanics for both **Leather** and **Plants** (Herbs/Tobacco). It adds "Dry Leather" and "Dry Herbs" context menu options directly to world drying racks, allowing you to process wet items into their dried versions.
 
 > **Note**: This is a temporary fix mod intended to restore drying functionality in Build 42 (especially for Multiplayer) until the official passive drying system is fully implemented and fixed by the developers.
@@ -71,6 +73,19 @@ The mod uses a modular registry to map input items to their dried outputs and re
 `ISDryItemAction.lua` provides a single, reusable Timed Action for all drying tasks, handling animation, sound, and item transformation.
 
 ## Development
+
+### Type Validation
+This project uses [EmmyLua](https://github.com/EmmyLua) for type safety. We use the `Umbrella` library to provide Project Zomboid API types.
+
+To ensure type safety, it is recommended to use `emmylua_check`:
+```bash
+# Install emmylua_check (requires Rust/Cargo)
+cargo install emmylua_check
+
+# Run validation from the mod root
+cd Contents/mods/DryingRacksFixedB42MP
+emmylua_check
+```
 
 ### Running Tests
 The project includes a test suite in `media/lua/tests/DryingRackTests.lua`. You can run these in the Project Zomboid debug console or via a standalone Lua environment that mocks the PZ API.

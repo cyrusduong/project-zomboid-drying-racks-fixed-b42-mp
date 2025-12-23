@@ -63,6 +63,11 @@ DryingRackData_Leather = {
 	},
 }
 
+---@class DryingRackMapping
+---@field output string
+---@field size string
+
+---@type table<string, DryingRackMapping>
 DryingRackMapping_Leather = {}
 for size, data in pairs(DryingRackData_Leather) do
 	for i, input in ipairs(data.inputs) do

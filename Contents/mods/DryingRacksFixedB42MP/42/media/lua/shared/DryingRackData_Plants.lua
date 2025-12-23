@@ -47,6 +47,7 @@ DryingRackData_Plants = {
 	},
 }
 
+---@type table<string, DryingRackMapping>
 DryingRackMapping_Plants = {}
 for size, data in pairs(DryingRackData_Plants) do
 	for i, input in ipairs(data.inputs) do
