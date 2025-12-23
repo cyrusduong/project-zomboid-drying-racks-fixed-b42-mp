@@ -11,7 +11,8 @@ This mod adds instant leather drying functionality to existing vanilla drying ra
 Contents/mods/LeatherDryingRack/
 ├── mod.info                              # Mod metadata
 ├── .emmyrc.json                         # EmmyLua type checking configuration
-└── media/lua/
+├── preview.png                           # Workshop thumbnail
+└── 42/media/lua/
     ├── client/
     │   ├── ISLeatherDryingRackMenu.lua    # Main context menu implementation
     │   └── tests/

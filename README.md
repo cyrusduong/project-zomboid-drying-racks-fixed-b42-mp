@@ -49,10 +49,13 @@ LeatherDryingRack/
         └── LeatherDryingRack/
             ├── mod.info
             ├── .emmyrc.json
-            └── media/
-                └── lua/
-                    ├── client/
-                    └── shared/
+            ├── preview.png
+            └── 42/
+                └── media/
+                    └── lua/
+                        ├── client/
+                        ├── shared/
+                        └── tests/
 ```
 
 When installed via Steam Workshop, this structure is created automatically.
@@ -107,7 +110,8 @@ Built with **PZ-Umbrella** types for enhanced development experience:
 Contents/mods/LeatherDryingRack/
 ├── mod.info                              # Mod metadata
 ├── .emmyrc.json                         # EmmyLua configuration
-└── media/lua/
+├── preview.png                           # Workshop thumbnail
+└── 42/media/lua/
     ├── client/
     │   ├── ISLeatherDryingRackMenu.lua    # Context menu implementation
     │   └── tests/
@@ -135,6 +139,51 @@ This mod was developed using the PZ-Umbrella framework for enhanced type safety 
 - Project Zomboid Build 42
 - EmmyLua IDE plugin (recommended)
 - PZ-Umbrella types (included as submodule)
+
+### Local Testing Setup
+To test the mod locally without using Steam Workshop:
+
+1. **Install to Workshop Directory**:
+   ```bash
+   # Remove any existing installation
+   rm -rf ~/Zomboid/Workshop/LeatherDryingRack
+   
+   # Copy the Contents folder (required by workshop uploader)
+   cp -r /path/to/project/Contents ~/Zomboid/Workshop/LeatherDryingRack
+   
+   # Copy mod.info and preview.png to root (required for workshop compatibility)
+   cp /path/to/project/mod.info ~/Zomboid/Workshop/LeatherDryingRack/
+   cp /path/to/project/preview.png ~/Zomboid/Workshop/LeatherDryingRack/
+   ```
+
+2. **Directory Structure**:
+   ```
+   ~/Zomboid/Workshop/LeatherDryingRack/
+   ├── mod.info                    # Workshop requires this at root
+   ├── preview.png                 # Workshop requires this at root
+   └── Contents/                   # All mod files must be inside this
+       └── mods/
+           └── LeatherDryingRack/
+               ├── mod.info         # Nested copy for compatibility
+               ├── preview.png      # Nested copy for compatibility
+               └── 42/
+                   └── media/
+                       └── lua/
+   ```
+
+3. **Important Notes**:
+   - **No symlinks**: Workshop uploader and game engine don't support symlinks
+   - **Both locations**: `mod.info` and `preview.png` must exist in root and nested locations
+   - **Contents folder**: Workshop uploader requires all files inside `Contents/` folder
+   - **Real-time testing**: Launch PZ after copying files to test immediately
+
+4. **Development Workflow**:
+   - Edit files in project source
+   - Run the copy commands above to update workshop installation
+   - Launch Project Zomboid to test changes
+   - Enable mod in PZ mods menu
+
+This structure ensures compatibility with both manual installation and Steam Workshop requirements.
 
 ## Support
 
