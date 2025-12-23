@@ -43,9 +43,9 @@ function ISDryItemAction:perform()
 		local args = { itemID = self.item:getID(), outputType = self.outputType }
 		sendClientCommand(self.character, "DryingRack", "dryItem", args)
 		
-		-- We also do a local "optimistic" swap so the UI feels responsive
-		-- Note: The server will sync the "true" state back to us.
-		local added = self.character:getInventory():AddItem(self.outputType)
+		-- We only remove the wet item locally for responsiveness.
+		-- We DO NOT AddItem here because the server will do it and sync it back.
+		-- This prevents duplication.
 		self.character:getInventory():Remove(self.item)
 	else
 		-- In SP, we just do it locally
