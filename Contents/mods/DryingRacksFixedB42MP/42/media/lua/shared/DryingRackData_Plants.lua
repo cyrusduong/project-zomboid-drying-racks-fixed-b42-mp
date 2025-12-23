@@ -51,9 +51,12 @@ DryingRackData_Plants = {
 DryingRackMapping_Plants = {}
 for size, data in pairs(DryingRackData_Plants) do
 	for i, input in ipairs(data.inputs) do
-		DryingRackMapping_Plants[input] = {
-			output = data.outputs[i],
-			size = size,
-		}
+		local output = data.outputs[i]
+		if output then
+			DryingRackMapping_Plants[input] = {
+				output = output,
+				size = size,
+			}
+		end
 	end
 end

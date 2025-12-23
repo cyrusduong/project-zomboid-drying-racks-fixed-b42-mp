@@ -87,13 +87,24 @@ function ISDryingRackMenu_Plants.OnFillWorldObjectContextMenu(player, context, w
  	local dryingRacks = {}
  	local seenSizes = {}
 
- 	if not worldobjects then
- 		print("[ISDryingRackMenu_Plants] worldobjects is nil, returning")
- 		return
- 	end
+	if not worldobjects then
+		print("[ISDryingRackMenu_Plants] worldobjects is nil, returning")
+		return
+	end
 
- 	for i = 2, #worldobjects do
- 		local rootObj = worldobjects[i]
+	-- Find drying rack objects
+	-- We start at i = 1 (the Floor) to ensure the menu works even if clicking empty space inside the rack.
+	-- Sometimes cursor is in a weird spot, IE. inbetween two drying racks, we can get both
+	-- with the getSquare -> getObjects then loop thru objects. However this may cause duplicate values.
+	--
+	-- INVARIANT: We know we can only have 1 rack per coordinate, so if we already put an object
+	-- in the drying rack table for a certain coordinate then we don't need to put it again.
+	-- INVARIANT: If we have multiple of the same size drying rack next to each other, it doesn't
+	-- make sense to list all of them, simply list the first one in the loop.
+	-- IE. At maximum there can be 3 options for each rack size, otherwise maximum of 1 per rack size displayed
+	-- in the context menu
+	for i = 1, #worldobjects do
+		local rootObj = worldobjects[i]
  		if rootObj and rootObj.getSquare then
  			local square = rootObj:getSquare()
  			if square then
@@ -156,12 +167,12 @@ function ISDryingRackMenu_Plants.OnFillWorldObjectContextMenu(player, context, w
  		print("[ISDryingRackMenu_Plants] Compatible items for this rack: " .. #compatiblePlants)
  		print("[ISDryingRackMenu_Plants] Incompatible items for this rack: " .. #incompatiblePlants)
 
- 		if #compatiblePlants > 0 or #incompatiblePlants > 0 then
- 			local rackName = DryingRackUtils.getDisplayName(category, rackSize)
- 			print("[ISDryingRackMenu_Plants] Creating submenu for: " .. rackName)
+		if #compatiblePlants > 0 or #incompatiblePlants > 0 then
+			local rackName = DryingRackUtils.getDisplayName(category, rackSize)
+			print("[ISDryingRackMenu_Plants] Creating submenu for: " .. rackName)
 
- 			local rackOption = context:addOptionOnTop("Dry Herbs", worldobjects, nil)
- 			print("[ISDryingRackMenu_Plants] rackOption created: " .. tostring(rackOption))
+			local rackOption = context:addOptionOnTop("Dry Herbs on " .. rackSize:gsub("^%l", string.upper) .. " Rack", worldobjects, nil)
+			print("[ISDryingRackMenu_Plants] rackOption created: " .. tostring(rackOption))
 
  			local subMenu = ISContextMenu:getNew(context)
  			context:addSubMenu(rackOption, subMenu)

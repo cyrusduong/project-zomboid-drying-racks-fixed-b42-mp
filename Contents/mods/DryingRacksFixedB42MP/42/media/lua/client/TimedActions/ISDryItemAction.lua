@@ -44,7 +44,15 @@ function ISDryItemAction:perform()
 
 	-- Feedback
 	if self.character:isLocalPlayer() then
-		HaloTextHelper.addGoodText(self.character, "Dried Item Created")
+		print("[ISDryItemAction] perform - generating feedback for: " .. tostring(self.outputType))
+		local itemName = "Dried Item"
+		-- In Build 42, use instanceItem for previewing names
+		local item = instanceItem(self.outputType)
+		if item then
+			itemName = item:getName()
+		end
+		print("[ISDryItemAction] perform - halo text: " .. tostring(itemName) .. " dried")
+		HaloTextHelper.addGoodText(self.character, itemName .. " dried")
 	end
 
 	-- Part of the action queue

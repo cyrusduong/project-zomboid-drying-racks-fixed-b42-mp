@@ -71,7 +71,12 @@ Build 42 on macOS has difficulty with symlinks.
 ### Type Safety & Validation
 - **EmmyLua Integration**: This project uses EmmyLua for type checking. Ensure all Lua files have proper type annotations.
 - **Validation**: Before submitting changes, verify that there are no type errors. The project leverages the `Umbrella` library for Project Zomboid API types.
-- **Tooling**: If available, use `emmylua_check` to validate the workspace against `.emmyrc.json`.
+- **Tooling (Fast Check)**: For AI assistants, use `.emmyrc.fast.json` to perform a quick syntax and internal reference check without the heavy API library.
+  ```bash
+  /Users/cduong/.cargo/bin/emmylua_check --config Contents/mods/DryingRacksFixedB42MP/.emmyrc.fast.json Contents/mods/DryingRacksFixedB42MP/42/media/lua/
+  ```
+- **Tooling (Full Check)**: For manual validation, use the standard `.emmyrc.json`.
+- **Global Suppression**: Many Project Zomboid globals (e.g., `IsoPlayer`, `Events`, `luautils`) will show as undefined in the "Fast Check". This is expected; focus on errors within the mod's own logic.
 
 ### Code Style & Formatting
 - **Lua Indentation**: Use **Tabs** for indentation in all Lua files to maintain consistency with the project's LSP (lua_ls) settings.

@@ -2,8 +2,6 @@
     "$schema": "https://raw.githubusercontent.com/EmmyLuaLs/emmylua-analyzer-rust/refs/heads/main/crates/emmylua_code_analysis/resources/schema.json",
     "workspace": {
         "library": [
-            "../../../Umbrella/library/lua",
-            "../../../Umbrella/library/java"
         ],
         "ignoreDir": [
             "42/media/lua/tests"

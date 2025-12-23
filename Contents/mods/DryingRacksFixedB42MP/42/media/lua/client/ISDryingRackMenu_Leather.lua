@@ -93,7 +93,18 @@ function ISDryingRackMenu_Leather.OnFillWorldObjectContextMenu(player, context, 
 		return
 	end
 
-	for i = 2, #worldobjects do
+	-- Find drying rack objects
+	-- We start at i = 1 (the Floor) to ensure the menu works even if clicking empty space inside the rack.
+	-- Sometimes cursor is in a weird spot, IE. inbetween two drying racks, we can get both
+	-- with the getSquare -> getObjects then loop thru objects. However this may cause duplicate values.
+	--
+	-- INVARIANT: We know we can only have 1 rack per coordinate, so if we already put an object
+	-- in the drying rack table for a certain coordinate then we don't need to put it again.
+	-- INVARIANT: If we have multiple of the same size drying rack next to each other, it doesn't
+	-- make sense to list all of them, simply list the first one in the loop.
+	-- IE. At maximum there can be 3 options for each rack size, otherwise maximum of 1 per rack size displayed
+	-- in the context menu
+	for i = 1, #worldobjects do
 		local rootObj = worldobjects[i]
 		if rootObj and rootObj.getSquare then
 			local square = rootObj:getSquare()
@@ -177,7 +188,7 @@ function ISDryingRackMenu_Leather.OnFillWorldObjectContextMenu(player, context, 
 			local rackName = DryingRackUtils.getDisplayName(category, rackSize)
 			print("[ISDryingRackMenu_Leather] Creating submenu for: " .. rackName)
 
-			local rackOption = context:addOptionOnTop("Dry Leather", worldobjects, nil)
+			local rackOption = context:addOptionOnTop("Dry Leather on " .. rackSize:gsub("^%l", string.upper) .. " Rack", worldobjects, nil)
 			print("[ISDryingRackMenu_Leather] rackOption created: " .. tostring(rackOption))
 
 			local subMenu = ISContextMenu:getNew(context)

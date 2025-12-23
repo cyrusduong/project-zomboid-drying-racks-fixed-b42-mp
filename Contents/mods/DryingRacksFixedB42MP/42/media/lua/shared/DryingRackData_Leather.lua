@@ -71,9 +71,12 @@ DryingRackData_Leather = {
 DryingRackMapping_Leather = {}
 for size, data in pairs(DryingRackData_Leather) do
 	for i, input in ipairs(data.inputs) do
-		DryingRackMapping_Leather[input] = {
-			output = data.outputs[i],
-			size = size,
-		}
+		local output = data.outputs[i]
+		if output then
+			DryingRackMapping_Leather[input] = {
+				output = output,
+				size = size,
+			}
+		end
 	end
 end

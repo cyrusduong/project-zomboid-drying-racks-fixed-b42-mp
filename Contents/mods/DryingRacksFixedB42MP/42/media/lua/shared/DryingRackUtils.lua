@@ -80,25 +80,43 @@ function DryingRackUtils.getRackInfo(entity)
 	-- Fallback: Match on sprite atlas index in ANY of the metadata strings
 	-- B42 often leaves 'entityFullType' and 'displayName' empty for vanilla world objects.
 	-- We parse the sprite name (e.g., vegetation_drying_01_239) which is almost always present.
-	-- Indices mapping for 'vegetation_drying_01' sheet:
-	-- Small racks (herbs): 8, 9, 224, 225
-	-- Large racks (wheat/barley/rye): 20, 21, 22, 23, 236, 237, 238, 239
 	local allStrings = { typeNormalized, nameNormalized, displayNameNormalized, spriteNormalized }
 	for _, s in ipairs(allStrings) do
+		-- Plant Racks
 		if s:find("vegetation_drying_01_") then
 			local prefix = s:match("vegetation_drying_01_(%d+)")
-			print("[DryingRackUtils.getRackInfo] matched pattern in string: " .. s .. " -> prefix=" .. tostring(prefix))
+			print("[DryingRackUtils.getRackInfo] matched plant pattern: " .. s .. " -> prefix=" .. tostring(prefix))
 			local tileNum = tonumber(prefix)
 			if tileNum then
-				-- Categorization based on visual size in the sprite sheet
+				-- Indices mapping for 'vegetation_drying_01' sheet:
+				-- Small racks (herbs): 8, 9, 224, 225
+				-- Large racks (wheat/barley/rye): 20, 21, 22, 23, 236, 237, 238, 239
 				if tileNum == 8 or tileNum == 9 or tileNum == 224 or tileNum == 225 then
 					return "plant", "small"
 				elseif tileNum == 236 or tileNum == 237 or tileNum == 238 or tileNum == 239 or tileNum == 20 or tileNum == 21 or tileNum == 22 or tileNum == 23 then
-					-- Index 236 is the "Simple Large Plant Drying Rack" which looks identical to 239
 					return "plant", "large"
 				else
-					-- Default to large for any other index in this sheet to ensure visibility
 					return "plant", "large"
+				end
+			end
+		end
+
+		-- Leather Racks (Mod-specific sprites)
+		if s:find("crafted_05_") then
+			local prefix = s:match("crafted_05_(%d+)")
+			print("[DryingRackUtils.getRackInfo] matched leather pattern: " .. s .. " -> prefix=" .. tostring(prefix))
+			local tileNum = tonumber(prefix)
+			if tileNum then
+				-- Indices mapping for 'crafted_05' sheet:
+				-- Small: 74, 75
+				-- Medium: 108, 109, 110, 111
+				-- Large: 84, 85, 86, 87, 80, 81, 82, 83
+				if tileNum == 74 or tileNum == 75 then
+					return "leather", "small"
+				elseif tileNum == 108 or tileNum == 109 or tileNum == 110 or tileNum == 111 then
+					return "leather", "medium"
+				elseif (tileNum >= 80 and tileNum <= 87) then
+					return "leather", "large"
 				end
 			end
 		end
@@ -126,9 +144,9 @@ end
  		else
  			return "Herb Drying Rack"
  		end
- 	end
- 	return "Drying Rack"
- end
+  	end
+  	return "Drying Rack"
+  end
  
  ---@param player IsoPlayer
  ---@param rack IsoObject
