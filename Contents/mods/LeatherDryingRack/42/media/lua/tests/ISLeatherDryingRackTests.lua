@@ -1,4 +1,5 @@
 require "ISLeatherDryingRackMenu"
+require "LeatherDryingRackData"
 
 -- Test harness for leather drying rack functionality
 ISLeatherDryingRackTests = {}
@@ -34,6 +35,9 @@ ISLeatherDryingRackTests.mockPlayer = {
             return newItem
         end
     },
+    getInventory = function(self)
+        return self.inventory
+    end,
     getCurrentSquare = function(self)
         return {getX = function() return 0 end, getY = function() return 0 end}
     end,
@@ -50,18 +54,14 @@ ISLeatherDryingRackTests.mockRack = {
     end
 }
 
-ISLeatherDryingRackTests.mockWorldObjects = {
-    ISLeatherDryingRackTests.mockRack
-}
-
 -- Test 1: Leather mapping completeness
 function ISLeatherDryingRackTests.testLeatherMappingCompleteness()
     print("=== Test 1: Leather Mapping Completeness ===")
     
-    local expectedInputs = 18
+    local expectedInputs = 20 -- 11 small + 4 medium + 5 large
     local actualInputs = 0
     
-    for size, data in pairs(ISLeatherDryingRackMenu.LeatherTypes) do
+    for size, data in pairs(LeatherDryingRackData) do
         actualInputs = actualInputs + #data.inputs
         print("Size " .. size .. ": " .. #data.inputs .. " inputs, " .. #data.outputs .. " outputs")
         
@@ -104,7 +104,7 @@ function ISLeatherDryingRackTests.testLeatherMappingLookup()
     local totalTests = #testCases
     
     for _, testCase in ipairs(testCases) do
-        local mapping = ISLeatherDryingRackMenu.LeatherMapping[testCase.input]
+        local mapping = LeatherDryingRackMapping[testCase.input]
         
         if mapping and mapping.output == testCase.expectedOutput and mapping.size == testCase.expectedSize then
             print("PASS: " .. testCase.input .. " → " .. mapping.output .. " (size: " .. mapping.size .. ")")
@@ -122,7 +122,7 @@ function ISLeatherDryingRackTests.testLeatherMappingLookup()
     print("Lookup test results: " .. passedTests .. "/" .. totalTests .. " passed")
 end
 
--- Test 3: Rack type detection
+-- Test 3: Rack type detection (using Utils)
 function ISLeatherDryingRackTests.testRackTypeDetection()
     print("\n=== Test 3: Rack Type Detection ===")
     
@@ -138,7 +138,7 @@ function ISLeatherDryingRackTests.testRackTypeDetection()
     
     for _, testCase in ipairs(testCases) do
         local mockEntity = {getName = function() return testCase.name end}
-        local detectedType = ISLeatherDryingRackMenu.getRackType(mockEntity)
+        local detectedType = LeatherDryingRackUtils.getRackType(mockEntity)
         
         if detectedType == testCase.expected then
             print("PASS: " .. testCase.name .. " → " .. detectedType)
@@ -151,13 +151,13 @@ function ISLeatherDryingRackTests.testRackTypeDetection()
     print("Rack type detection results: " .. passedTests .. "/" .. totalTests .. " passed")
 end
 
--- Test 4: Rack size compatibility
+-- Test 4: Rack size compatibility (using Utils)
 function ISLeatherDryingRackTests.testRackSizeCompatibility()
     print("\n=== Test 4: Rack Size Compatibility ===")
     
     local testCases = {
-        {rackType = "small", expectedSizes = {small = true}},
-        {rackType = "medium", expectedSizes = {small = true, medium = true}},
+        {rackType = "small", expectedSizes = {small = true, medium = false, large = false}},
+        {rackType = "medium", expectedSizes = {small = true, medium = true, large = false}},
         {rackType = "large", expectedSizes = {small = true, medium = true, large = true}}
     }
     
@@ -165,13 +165,13 @@ function ISLeatherDryingRackTests.testRackSizeCompatibility()
     local totalTests = #testCases
     
     for _, testCase in ipairs(testCases) do
-        local compatibleSizes = ISLeatherDryingRackMenu.getCompatibleSizes(testCase.rackType)
+        local compatibleSizes = LeatherDryingRackUtils.getCompatibleSizes(testCase.rackType)
         
         local isMatch = true
         for size, expected in pairs(testCase.expectedSizes) do
-            if compatibleSizes[size] ~= expected then
+            if (compatibleSizes[size] or false) ~= expected then
                 isMatch = false
-                break
+                print("  Mismatch for " .. size .. ": expected " .. tostring(expected) .. ", got " .. tostring(compatibleSizes[size]))
             end
         end
         
@@ -186,13 +186,13 @@ function ISLeatherDryingRackTests.testRackSizeCompatibility()
     print("Size compatibility results: " .. passedTests .. "/" .. totalTests .. " passed")
 end
 
--- Test 5: Distance calculation
+-- Test 5: Distance calculation (using Utils)
 function ISLeatherDryingRackTests.testDistanceCalculation()
     print("\n=== Test 5: Distance Calculation ===")
     
     local testCases = {
         {playerX = 0, playerY = 0, rackX = 1, rackY = 1, expected = true},  -- sqrt(2) ≈ 1.41 <= 2
-        {playerX = 0, playerY = 0, rackX = 2, rackY = 2, expected = true},  -- sqrt(8) ≈ 2.82 > 2
+        {playerX = 0, playerY = 0, rackX = 2, rackY = 1, expected = false}, -- sqrt(5) ≈ 2.23 > 2
         {playerX = 0, playerY = 0, rackX = 3, rackY = 0, expected = false}, -- sqrt(9) = 3 > 2
     }
     
@@ -218,7 +218,7 @@ function ISLeatherDryingRackTests.testDistanceCalculation()
             end
         }
         
-        local isNear = ISLeatherDryingRackMenu.isPlayerNearRack(mockPlayer, mockRack)
+        local isNear = LeatherDryingRackUtils.isPlayerNearRack(mockPlayer, mockRack)
         
         if isNear == testCase.expected then
             print("PASS: Distance (" .. testCase.playerX .. "," .. testCase.playerY .. ") to (" .. testCase.rackX .. "," .. testCase.rackY .. ") → " .. tostring(isNear))
@@ -231,7 +231,7 @@ function ISLeatherDryingRackTests.testDistanceCalculation()
     print("Distance calculation results: " .. passedTests .. "/" .. totalTests .. " passed")
 end
 
--- Test 6: Wet leather detection in inventory
+-- Test 6: Wet leather detection in inventory (using Utils)
 function ISLeatherDryingRackTests.testWetLeatherDetection()
     print("\n=== Test 6: Wet Leather Detection ===")
     
@@ -244,7 +244,7 @@ function ISLeatherDryingRackTests.testWetLeatherDetection()
         {type = "Base.DriedLeather_NotWet", getDisplayName = function() return "Dried Leather" end} -- Should not be detected
     }
     
-    local detectedItems = ISLeatherDryingRackMenu.getWetLeatherItems(mockPlayer)
+    local detectedItems = LeatherDryingRackUtils.getWetLeatherItems(mockPlayer)
     
     if #detectedItems == 2 then
         print("PASS: Detected 2 wet leather items")
@@ -275,6 +275,9 @@ function ISLeatherDryingRackTests.testLeatherDryingProcess()
         outputType = "Base.RabbitLeather_Fur_Tan",
         size = "small"
     }
+    
+    -- Mock sendAddItemToContainer which is global in PZ
+    _G.sendAddItemToContainer = function() end
     
     -- Perform drying
     ISLeatherDryingRackMenu.dryLeather(mockPlayer, leatherData, mockRack)
@@ -309,7 +312,7 @@ function ISLeatherDryingRackTests.runAllTests()
     print("Leather Drying Rack Tests Complete!")
 end
 
--- Auto-run tests when this file is loaded (for debugging)
-if getDebug() then
+-- Auto-run tests if in a standalone Lua environment or debug mode
+if _G.getDebug and _G.getDebug() then
     ISLeatherDryingRackTests.runAllTests()
 end

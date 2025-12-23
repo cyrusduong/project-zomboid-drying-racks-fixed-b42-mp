@@ -1,13 +1,15 @@
 -- Simple validation script for leather drying rack mod
 -- This can be run in the Project Zomboid debug console
 
+require "LeatherDryingRackData"
+
 print("=== Leather Drying Rack Mod Validation ===")
 
 -- Test leather mapping completeness
 local totalInputs = 0
 local totalOutputs = 0
 
-for size, data in pairs(ISLeatherDryingRackMenu.LeatherTypes) do
+for size, data in pairs(LeatherDryingRackData) do
     totalInputs = totalInputs + #data.inputs
     totalOutputs = totalOutputs + #data.outputs
     
@@ -19,10 +21,10 @@ for size, data in pairs(ISLeatherDryingRackMenu.LeatherTypes) do
     end
 end
 
-if totalInputs == 18 then
-    print("PASS: All 18 leather types mapped correctly")
+if totalInputs == 20 then
+    print("PASS: All 20 leather types mapped correctly")
 else
-    print("FAIL: Expected 18 leather types, found " .. totalInputs)
+    print("FAIL: Expected 20 leather types, found " .. totalInputs)
 end
 
 -- Test rack type detection
@@ -34,7 +36,7 @@ local testRacks = {
 
 for _, test in ipairs(testRacks) do
     local mockEntity = {getName = function() return test.name end}
-    local detected = ISLeatherDryingRackMenu.getRackType(mockEntity)
+    local detected = LeatherDryingRackUtils.getRackType(mockEntity)
     
     if detected == test.expected then
         print("PASS: " .. test.name .. " → " .. detected)

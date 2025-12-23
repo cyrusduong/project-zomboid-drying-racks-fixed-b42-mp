@@ -12,27 +12,14 @@ ISLeatherDryingRackMenu = {}
 ---@param entity IsoObject
 ---@return string rackType
 function ISLeatherDryingRackMenu.getRackType(entity)
-	local name = entity:getName()
-	if string.find(name, "Simple_Drying_Rack") or string.find(name, "Herb_Drying_Rack") then
-		return "small"
-	elseif string.find(name, "Drying_Rack") and not string.find(name, "Simple") then
-		return "medium"
-	end
-	return "medium" -- default
+	return LeatherDryingRackUtils.getRackType(entity)
 end
 
 -- Get compatible leather sizes for rack type
 ---@param rackType string
 ---@return table compatibleSizes
 function ISLeatherDryingRackMenu.getCompatibleSizes(rackType)
-	if rackType == "small" then
-		return {small = true}
-	elseif rackType == "medium" then
-		return {small = true, medium = true}
-	elseif rackType == "large" then
-		return {small = true, medium = true, large = true}
-	end
-	return {}
+	return LeatherDryingRackUtils.getCompatibleSizes(rackType)
 end
 
 -- Check if player is within interaction distance of rack
@@ -40,41 +27,14 @@ end
 ---@param rack IsoObject
 ---@return boolean isNear
 function ISLeatherDryingRackMenu.isPlayerNearRack(player, rack)
-	if not player or not rack then return false end
-	
-	local playerSquare = player:getCurrentSquare()
-	local rackSquare = rack:getSquare()
-	
-	if not playerSquare or not rackSquare then return false end
-	
-	local distance = math.sqrt(
-		math.pow(playerSquare:getX() - rackSquare:getX(), 2) +
-		math.pow(playerSquare:getY() - rackSquare:getY(), 2)
-	)
-	
-	return distance <= 2.0 -- 2 tiles interaction range
+	return LeatherDryingRackUtils.isPlayerNearRack(player, rack)
 end
 
 -- Get wet leather items from player inventory
 ---@param player IsoPlayer
 ---@return table wetLeatherItems
 function ISLeatherDryingRackMenu.getWetLeatherItems(player)
-	local items = {}
-	local inventory = player:getInventory()
-	
-	for itemType, mapping in pairs(LeatherDryingRackMapping) do
-		local item = inventory:getFirstTagRecurse(itemType)
-		if item then
-			table.insert(items, {
-				item = item,
-				outputType = mapping.output,
-				size = mapping.size,
-				inputType = itemType
-			})
-		end
-	end
-	
-	return items
+	return LeatherDryingRackUtils.getWetLeatherItems(player)
 end
 
 -- Perform leather drying
@@ -92,10 +52,14 @@ function ISLeatherDryingRackMenu.dryLeather(player, wetLeatherData, rack)
 	local driedItem = inventory:AddItem(wetLeatherData.outputType)
 	
 	-- Sync for multiplayer
-	sendAddItemToContainer(inventory, driedItem)
+	if sendAddItemToContainer then
+		sendAddItemToContainer(inventory, driedItem)
+	end
 	
 	-- Show feedback message
-	player:Say("Dried " .. wetItem:getDisplayName() .. " on " .. rack:getDisplayName())
+	if player.Say then
+		player:Say("Dried " .. wetItem:getDisplayName() .. " on " .. rack:getDisplayName())
+	end
 end
 
 -- Main context menu handler
@@ -189,4 +153,6 @@ function ISLeatherDryingRackMenu.OnFillWorldObjectContextMenu(player, context, w
 end
 
 -- Register to event handler
-Events.OnFillWorldObjectContextMenu.Add(ISLeatherDryingRackMenu.OnFillWorldObjectContextMenu)
+if Events and Events.OnFillWorldObjectContextMenu then
+	Events.OnFillWorldObjectContextMenu.Add(ISLeatherDryingRackMenu.OnFillWorldObjectContextMenu)
+end

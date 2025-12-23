@@ -162,13 +162,14 @@ To test the mod locally without using Steam Workshop:
    ├── mod.info                    # Workshop requires this at root
    ├── preview.png                 # Workshop requires this at root
    └── Contents/                   # All mod files must be inside this
-       └── mods/
-           └── LeatherDryingRack/
-               ├── mod.info         # Nested copy for compatibility
-               ├── preview.png      # Nested copy for compatibility
-               └── 42/
-                   └── media/
-                       └── lua/
+    └── mods/
+        └── LeatherDryingRack/
+            ├── mod.info         # Nested copy for compatibility
+            ├── preview.png      # Nested copy for compatibility
+            ├── common/          # Mandatory placeholder for some versions of the Workshop uploader
+            └── 42/
+                └── media/
+                    └── lua/
    ```
 
 3. **Important Notes**:

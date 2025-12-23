@@ -1,6 +1,8 @@
 -- Shared leather drying rack data and utilities
 -- This file provides common functionality used by both client and server
 
+LeatherDryingRackUtils = {}
+
 -- Leather type mappings by size category
 LeatherDryingRackData = {
     small = {

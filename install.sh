@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Project Zomboid Mod Installation Script
+# This script copies the mod files to the Zomboid Workshop directory with the correct structure.
+
+PROJECT_ROOT="/Users/cduong/Projects/project-zomboid-mp-craft-leather-build-42"
+TARGET_DIR="$HOME/Zomboid/Workshop/LeatherDryingRack"
+
+echo "Installing LeatherDryingRack mod..."
+
+# 1. Clean up existing installation
+if [ -d "$TARGET_DIR" ]; then
+    echo "Cleaning up old installation at $TARGET_DIR..."
+    rm -rf "$TARGET_DIR"
+fi
+
+# 2. Create the target directory structure
+# The Workshop uploader needs: [Folder]/Contents/mods/[ModName]/...
+echo "Creating directory structure..."
+mkdir -p "$TARGET_DIR"
+
+# 3. Ensure mandatory common folder exists (Workshop uploader requirement)
+echo "Ensuring common folder placeholder exists..."
+mkdir -p "$PROJECT_ROOT/Contents/mods/LeatherDryingRack/common"
+touch "$PROJECT_ROOT/Contents/mods/LeatherDryingRack/common/.gitkeep"
+
+# 4. Copy the Contents folder into the target directory
+# This will result in $TARGET_DIR/Contents/mods/...
+echo "Copying mod files..."
+cp -r "$PROJECT_ROOT/Contents" "$TARGET_DIR/"
+
+# 4. Clean up Contents folder (only folders allowed here)
+echo "Cleaning up Contents root..."
+rm -f "$TARGET_DIR/Contents/preview.png"
+
+# 5. Copy preview.png and mod.info to the workshop root (Workshop uploader requirement)
+echo "Copying preview.png and mod.info to workshop root..."
+cp "$PROJECT_ROOT/Contents/mods/LeatherDryingRack/preview.png" "$TARGET_DIR/preview.png"
+cp "$PROJECT_ROOT/Contents/mods/LeatherDryingRack/mod.info" "$TARGET_DIR/mod.info"
+
+echo "Installation complete!"
+echo "Target directory: $TARGET_DIR"
+echo "Structure check:"
+ls -R "$TARGET_DIR/Contents" | head -n 10
