@@ -2,6 +2,8 @@
 
 A Project Zomboid mod that fixes broken leather crafting mechanics by adding context menu options to drying racks for instant processing of wet furred leather into dried leather.
 
+> **Note**: This is a temporary fix mod intended to restore leather crafting functionality until the official crafting system is fully implemented in the base game.
+
 ## Description
 
 This mod addresses the leather crafting issues introduced in Project Zomboid Build 42 where the vanilla drying rack system became partially broken. Instead of relying on the traditional time-based drying mechanics, this mod provides instant leather processing through intuitive context menu interactions.
