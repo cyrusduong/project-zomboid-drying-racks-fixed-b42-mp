@@ -8,7 +8,7 @@ This mod adds instant leather drying functionality to existing vanilla drying ra
 
 ### Mod Structure
 ```
-mods/LeatherDryingRack/
+Contents/mods/LeatherDryingRack/
 ├── mod.info                              # Mod metadata
 ├── .emmyrc.json                         # EmmyLua type checking configuration
 └── media/lua/
@@ -19,6 +19,16 @@ mods/LeatherDryingRack/
     │       └── ValidateMod.lua               # Simple validation script
     └── shared/
         └── LeatherDryingRackData.lua         # Shared data and utilities
+```
+
+**Project Structure:**
+```
+project-zomboid-mp-craft-leather-build-42/
+├── Contents/mods/LeatherDryingRack/     # Steam Workshop mod files
+├── Umbrella/                           # PZ-Umbrella types (submodule)
+├── openspec/                           # Development specifications
+├── README.md                           # User documentation
+└── IMPLEMENTATION_COMPLETE.md          # Technical documentation
 ```
 
 ## Key Features

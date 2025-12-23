@@ -36,10 +36,12 @@ This mod addresses the leather crafting issues introduced in Project Zomboid Bui
 
 ### Manual Installation
 1. Download the mod from [Steam Workshop] (placeholder link)
-2. Extract the `LeatherDryingRack` folder to your Project Zomboid mods directory:
-   - **Steam**: `Steam/steamapps/common/ProjectZomboid/mods/`
-   - **Mac**: `~/Library/Application Support/Steam/steamapps/common/ProjectZomboid/mods/`
-   - **Linux**: `~/.steam/steam/steamapps/common/ProjectZomboid/mods/`
+2. Extract the mod folder to your Project Zomboid mods directory:
+   - **Steam**: `Steam/steamapps/common/ProjectZomboid/mods/LeatherDryingRack/`
+   - **Mac**: `~/Library/Application Support/Steam/steamapps/common/ProjectZomboid/mods/LeatherDryingRack/`
+   - **Linux**: `~/.steam/steam/steamapps/common/ProjectZomboid/mods/LeatherDryingRack/`
+   
+The mod contains the proper Steam Workshop structure with `Contents/mods/LeatherDryingRack/` that will automatically extract correctly when installed via Steam.
 3. Launch Project Zomboid
 4. Click "Mods" in the main menu
 5. Find "Context Menu Craft Leather Fix - Build 42 MP" and enable it
@@ -88,7 +90,7 @@ Built with **PZ-Umbrella** types for enhanced development experience:
 
 ### File Structure
 ```
-LeatherDryingRack/
+Contents/mods/LeatherDryingRack/
 ├── mod.info                              # Mod metadata
 ├── .emmyrc.json                         # EmmyLua configuration
 └── media/lua/
@@ -99,6 +101,16 @@ LeatherDryingRack/
     │       └── ValidateMod.lua               # Validation script
     └── shared/
         └── LeatherDryingRackData.lua         # Shared data utilities
+```
+
+**Project Structure:**
+```
+project-zomboid-mp-craft-leather-build-42/
+├── Contents/mods/LeatherDryingRack/     # Steam Workshop mod files
+├── Umbrella/                           # PZ-Umbrella types (submodule)
+├── openspec/                           # Development specifications
+├── README.md                           # User documentation
+└── IMPLEMENTATION_COMPLETE.md          # Technical documentation
 ```
 
 ## Development
