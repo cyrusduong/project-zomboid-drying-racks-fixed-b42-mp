@@ -36,12 +36,26 @@ This mod addresses the leather crafting issues introduced in Project Zomboid Bui
 
 ### Manual Installation
 1. Download the mod from [Steam Workshop] (placeholder link)
-2. Extract the mod folder to your Project Zomboid mods directory:
-   - **Steam**: `Steam/steamapps/common/ProjectZomboid/mods/LeatherDryingRack/`
-   - **Mac**: `~/Library/Application Support/Steam/steamapps/common/ProjectZomboid/mods/LeatherDryingRack/`
-   - **Linux**: `~/.steam/steam/steamapps/common/ProjectZomboid/mods/LeatherDryingRack/`
-   
-The mod contains the proper Steam Workshop structure with `Contents/mods/LeatherDryingRack/` that will automatically extract correctly when installed via Steam.
+2. Extract to your Zomboid Workshop directory:
+   - **Windows**: `C:\Users\[username]\Zomboid\Workshop\LeatherDryingRack\`
+   - **Mac**: `~/Zomboid/Workshop/LeatherDryingRack/`
+   - **Linux**: `~/.local/share/ProjectZomboid/Workshop/LeatherDryingRack/`
+
+The extracted structure should be:
+```
+LeatherDryingRack/
+└── Contents/
+    └── mods/
+        └── LeatherDryingRack/
+            ├── mod.info
+            ├── .emmyrc.json
+            └── media/
+                └── lua/
+                    ├── client/
+                    └── shared/
+```
+
+When installed via Steam Workshop, this structure is created automatically.
 3. Launch Project Zomboid
 4. Click "Mods" in the main menu
 5. Find "Context Menu Craft Leather Fix - Build 42 MP" and enable it
@@ -131,7 +145,3 @@ For issues, suggestions, or contributions:
 ## License
 
 This mod is released under the same terms as Project Zomboid modding community standards.
-
----
-
-**Ready for immediate use on Build 42 multiplayer servers!** 🧟‍♂️
