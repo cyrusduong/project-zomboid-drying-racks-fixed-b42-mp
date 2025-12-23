@@ -37,12 +37,14 @@ function DryingRackUtils.getRackInfo(entity)
 	print("[DryingRackUtils.getRackInfo] entityFullType=" .. entityFullType .. ", displayName=" .. displayName .. ", name=" .. name .. ", spriteName=" .. spriteName)
 
 	-- Match on entity types first (most reliable) - normalizing by removing spaces
+	-- NOTE: In Build 42, world objects often lack full type metadata. We check multiple sources.
 	local typeNormalized = entityFullType:gsub("%s+", "")
 	local nameNormalized = name:gsub("%s+", "")
 	local displayNameNormalized = displayName:gsub("%s+", "")
 	local spriteNormalized = spriteName:gsub("%s+", "")
 
 	-- Leather Racks
+	-- These are custom mod entities, usually more reliable than vanilla vegetation sprites.
 	if
 		typeNormalized == "Base.ES_DryingRackSmall"
 		or typeNormalized == "Base.DryingRackSmall"
@@ -64,6 +66,7 @@ function DryingRackUtils.getRackInfo(entity)
 	end
 
 	-- Plant Racks based on entity type or display name
+	-- Vanilla B42 plant racks are notoriously inconsistent with their metadata.
 	if typeNormalized == "Base.Simple_Herb_Drying_Rack" or displayNameNormalized:find("SimpleSmallPlantDryingRack") then
 		return "plant", "small"
 	elseif typeNormalized == "Base.Herb_Drying_Rack" or displayNameNormalized:find("SmallPlantDryingRack") then
@@ -75,8 +78,11 @@ function DryingRackUtils.getRackInfo(entity)
 	end
 
 	-- Fallback: Match on sprite atlas index in ANY of the metadata strings
-	-- Small racks (herbs): 8, 9, 224, 225, 236
-	-- Large racks (wheat/barley/rye): 20, 21, 22, 23, 237, 238, 239
+	-- B42 often leaves 'entityFullType' and 'displayName' empty for vanilla world objects.
+	-- We parse the sprite name (e.g., vegetation_drying_01_239) which is almost always present.
+	-- Indices mapping for 'vegetation_drying_01' sheet:
+	-- Small racks (herbs): 8, 9, 224, 225
+	-- Large racks (wheat/barley/rye): 20, 21, 22, 23, 236, 237, 238, 239
 	local allStrings = { typeNormalized, nameNormalized, displayNameNormalized, spriteNormalized }
 	for _, s in ipairs(allStrings) do
 		if s:find("vegetation_drying_01_") then
@@ -84,20 +90,22 @@ function DryingRackUtils.getRackInfo(entity)
 			print("[DryingRackUtils.getRackInfo] matched pattern in string: " .. s .. " -> prefix=" .. tostring(prefix))
 			local tileNum = tonumber(prefix)
 			if tileNum then
+				-- Categorization based on visual size in the sprite sheet
 				if tileNum == 8 or tileNum == 9 or tileNum == 224 or tileNum == 225 then
 					return "plant", "small"
 				elseif tileNum == 236 or tileNum == 237 or tileNum == 238 or tileNum == 239 or tileNum == 20 or tileNum == 21 or tileNum == 22 or tileNum == 23 then
-					-- Index 236 is the "Simple Large Plant Drying Rack" based on User feedback
+					-- Index 236 is the "Simple Large Plant Drying Rack" which looks identical to 239
 					return "plant", "large"
 				else
-					-- Default to large for any other index in this sheet
+					-- Default to large for any other index in this sheet to ensure visibility
 					return "plant", "large"
 				end
 			end
 		end
 	end
 
-	-- Final fallback for objects named "Drying_Rack" but without specific index
+	-- Final fallback for objects named "Drying_Rack" or "DryingRack" but without specific index
+	-- This handles cases where the game might have normalized the name but lost the sprite info.
 	if nameNormalized == "Drying_Rack" or nameNormalized == "DryingRack" or displayNameNormalized:find("DryingRack") then
 		return "plant", "large"
 	end
