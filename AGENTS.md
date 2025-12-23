@@ -64,9 +64,11 @@ cp -r /path/to/project/Contents ~/Zomboid/Workshop/LeatherDryingRack
 4. Enable mod in mods menu
 5. Test changes in-game
 
-### Workshop Upload Requirements
-- Choose the `LeatherDryingRack` folder containing `Contents/` subfolder
-- Workshop uploader validates that `Contents/` folder exists
-- All files must be inside `Contents/` for proper upload
+### Code Style & Formatting
+- **Lua Indentation**: Use **Tabs** for indentation in all Lua files to maintain consistency with the project's LSP (lua_ls) settings.
+- **Trailing Whitespace**: Ensure no trailing whitespace is left in the files.
+- **Spacing**: Follow standard Lua spacing conventions (e.g., space around operators like `x = 1 + 2`).
 
-This ensures compatibility with both local testing and Steam Workshop distribution.
+### Scripting Utilities
+- **./install.sh**: Synchronizes local project files to the Zomboid Workshop directory.
+- **./publish.sh**: Wrapper script that runs `./install.sh` and then uses `steamcmd` to upload the mod to the Steam Workshop.

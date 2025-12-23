@@ -2,8 +2,8 @@
 ---@meta
 
 -- Import Umbrella types for Project Zomboid API
-require "ISUI/ISContextMenu"
-require "LeatherDryingRackData"
+require("ISUI/ISContextMenu")
+require("LeatherDryingRackData")
 
 ---@class ISLeatherDryingRackMenu
 ISLeatherDryingRackMenu = {}
@@ -44,18 +44,18 @@ end
 function ISLeatherDryingRackMenu.dryLeather(player, wetLeatherData, rack)
 	local inventory = player:getInventory()
 	local wetItem = wetLeatherData.item
-	
+
 	-- Remove wet leather from inventory
 	inventory:Remove(wetItem)
-	
+
 	-- Add dried leather to inventory
 	local driedItem = inventory:AddItem(wetLeatherData.outputType)
-	
+
 	-- Sync for multiplayer
 	if sendAddItemToContainer then
 		sendAddItemToContainer(inventory, driedItem)
 	end
-	
+
 	-- Show feedback message
 	if player.Say then
 		player:Say("Dried " .. wetItem:getDisplayName() .. " on " .. rack:getDisplayName())
@@ -73,7 +73,7 @@ function ISLeatherDryingRackMenu.dryAll(player, compatibleLeathers, rack)
 	for _, leatherData in ipairs(compatibleLeathers) do
 		inventory:Remove(leatherData.item)
 		local driedItem = inventory:AddItem(leatherData.outputType)
-		
+
 		if sendAddItemToContainer then
 			sendAddItemToContainer(inventory, driedItem)
 		end
@@ -91,12 +91,18 @@ end
 ---@param worldobjects table
 ---@param test boolean
 function ISLeatherDryingRackMenu.OnFillWorldObjectContextMenu(player, context, worldobjects, test)
-	if test and ISWorldObjectContextMenu.Test then return true end
+	if test and ISWorldObjectContextMenu.Test then
+		return true
+	end
 
 	local playerObj = getSpecificPlayer(player)
-	if not playerObj then return end
-	
-	if playerObj:getVehicle() then return false end
+	if not playerObj then
+		return
+	end
+
+	if playerObj:getVehicle() then
+		return false
+	end
 
 	-- Find drying rack objects
 	local dryingRacks = {}
@@ -105,33 +111,39 @@ function ISLeatherDryingRackMenu.OnFillWorldObjectContextMenu(player, context, w
 		local entityName = entityObj and entityObj:getDefinitionName() or ""
 		local name = obj:getName() or ""
 
-		if string.find(entityName, "DryingRack") or 
-		   string.find(name, "Drying_Rack") or 
-		   string.find(name, "Drying Rack") then
+		if
+			string.find(entityName, "DryingRack")
+			or string.find(name, "Drying_Rack")
+			or string.find(name, "Drying Rack")
+		then
 			table.insert(dryingRacks, obj)
 		end
 	end
-	
-	if #dryingRacks == 0 then return end
+
+	if #dryingRacks == 0 then
+		return
+	end
 
 	-- Get wet leather items from player inventory
 	local wetLeatherItems = ISLeatherDryingRackMenu.getWetLeatherItems(playerObj)
-	if #wetLeatherItems == 0 then return end
+	if #wetLeatherItems == 0 then
+		return
+	end
 
 	-- Process each drying rack
 	for _, rack in ipairs(dryingRacks) do
 		if ISLeatherDryingRackMenu.isPlayerNearRack(playerObj, rack) then
 			local rackType = ISLeatherDryingRackMenu.getRackType(rack)
 			local compatibleSizes = ISLeatherDryingRackMenu.getCompatibleSizes(rackType)
-			
+
 			-- Create main option for this rack
 			local rackOption = context:addOptionOnTop("Dry Leather", worldobjects, nil)
 			local subMenu = ISContextMenu:getNew(context)
 			context:addSubMenu(rackOption, subMenu)
-			
+
 			local compatibleLeathers = {}
 			local incompatibleLeathers = {}
-			
+
 			-- Sort leathers by compatibility
 			for _, leatherData in ipairs(wetLeatherItems) do
 				if compatibleSizes[leatherData.size] then
@@ -163,25 +175,26 @@ function ISLeatherDryingRackMenu.OnFillWorldObjectContextMenu(player, context, w
 					leatherData,
 					rack
 				)
-				
+
 				-- Add tooltip with leather info
 				option.toolTip = ISWorldObjectContextMenu.addToolTip()
 				option.toolTip:setName("Dry Leather")
-				option.toolTip.description = "Transforms wet furred leather into dried leather using this drying rack.\\n\\nOutput: " .. 
-					leatherData.item:getDisplayName():gsub("Wet", "Dried")
+				option.toolTip.description = "Transforms wet furred leather into dried leather using this drying rack.\\n\\nOutput: "
+					.. leatherData.item:getDisplayName():gsub("Wet", "Dried")
 			end
 
 			-- Add disabled options for incompatible leathers
 			for _, leatherData in ipairs(incompatibleLeathers) do
-				local option = subMenu:addOption(
-					"Dry " .. leatherData.item:getDisplayName() .. " (Rack too small)",
-					rack,
-					nil
-				)
+				local option =
+					subMenu:addOption("Dry " .. leatherData.item:getDisplayName() .. " (Rack too small)", rack, nil)
 				option.notAvailable = true
 				option.toolTip = ISWorldObjectContextMenu.addToolTip()
 				option.toolTip:setName("Rack Too Small")
-				option.toolTip.description = "This leather requires a " .. leatherData.size .. " drying rack, but this is a " .. rackType .. " rack."
+				option.toolTip.description = "This leather requires a "
+					.. leatherData.size
+					.. " drying rack, but this is a "
+					.. rackType
+					.. " rack."
 			end
 		end
 	end
